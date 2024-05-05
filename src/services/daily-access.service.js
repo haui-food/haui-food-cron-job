@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const { env } = require('../config');
-const DailyAccess = require('../models/daily-access.model');
+const { DailyAccess } = require('../models');
 const getStartAndEndOfDay = require('../utils/getStartAndEndOfDay');
 
 const fetchDataCount = async () => {
