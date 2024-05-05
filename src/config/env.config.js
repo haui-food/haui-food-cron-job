@@ -13,6 +13,10 @@ const env = {
     apiURL: process.env.LOG_API_URL,
     apiKey: process.env.LOG_API_KEY,
   },
+  countAccess: {
+    apiURL: process.env.COUNT_ACCESS_API_URL,
+    apiKey: process.env.COUNT_ACCESS_API_KEY,
+  },
 };
 
 module.exports = env;

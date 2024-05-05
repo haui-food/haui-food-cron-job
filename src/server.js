@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { env } = require('./config');
-const { logService, databaseService } = require('./services');
+const { logService, databaseService, dailyAccessService } = require('./services');
 
 const app = express();
 
@@ -17,6 +17,9 @@ mongoose
   })
   .then(() => {
     cron.schedule('0 */6 * * *', databaseService.backupDatabase);
+  })
+  .then(() => {
+    cron.schedule('*/5 * * * *', dailyAccessService.updateCount);
   })
   .catch((error) => {
     console.error('Error:', error);
