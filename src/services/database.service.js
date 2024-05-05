@@ -3,14 +3,12 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const { env } = require('../config');
+const sleep = require('../utils/sleep');
 const telegramService = require('./telegram.service');
 const compressFolder = require('../utils/compressFolder');
 
 const exportDatabase = async (uri, outputFolder) => {
   try {
-    await mongoose.connect(uri);
-    console.log('Connected to MongoDB');
-
     const collections = await mongoose.connection.db.collections();
 
     for (const collection of collections) {
@@ -25,10 +23,11 @@ const exportDatabase = async (uri, outputFolder) => {
       fs.writeFileSync(`${outputFolder}/${collectionName}.json`, jsonData);
 
       console.log(`Data exported to ${collectionName}.json`);
-    }
 
-    mongoose.connection.close();
-    console.log('Disconnected from MongoDB');
+      await sleep(2000);
+
+      console.log('Sleeping for 2 second...');
+    }
   } catch (error) {
     console.error('Error:', error);
   }
