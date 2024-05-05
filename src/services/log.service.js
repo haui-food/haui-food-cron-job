@@ -23,11 +23,15 @@ const fetchDataLogs = async () => {
 };
 
 const sendLogs = async () => {
+  console.log('Sending logs...');
+
   const logs = await fetchDataLogs();
 
   if (logs.length === 0) return;
 
-  await telegramService.sendMessage(logs.join('\n'), env.telegram.chatId);
+  const { logChatId } = env.telegram;
+
+  await telegramService.sendMessage(logs.join('\n'), logChatId);
 };
 
 module.exports = { sendLogs };

@@ -7,8 +7,10 @@ const sleep = require('../utils/sleep');
 const telegramService = require('./telegram.service');
 const compressFolder = require('../utils/compressFolder');
 
-const exportDatabase = async (uri, outputFolder) => {
+const exportDatabase = async (outputFolder) => {
   try {
+    console.log('Exporting database...');
+
     const collections = await mongoose.connection.db.collections();
 
     for (const collection of collections) {
@@ -24,9 +26,9 @@ const exportDatabase = async (uri, outputFolder) => {
 
       console.log(`Data exported to ${collectionName}.json`);
 
-      await sleep(2000);
+      await sleep(1000);
 
-      console.log('Sleeping for 2 second...');
+      console.log('Sleeping for 1 second...');
     }
   } catch (error) {
     console.error('Error:', error);
@@ -34,17 +36,16 @@ const exportDatabase = async (uri, outputFolder) => {
 };
 
 const backupDatabase = async () => {
-  const mongoUri = env.mongoURI;
-  const chatId = env.telegram.chatId;
+  const { backupChatId } = env.telegram;
 
   const outputFolder = path.join(__dirname, '../../database');
   const zipFilePath = outputFolder + `.zip`;
 
-  await exportDatabase(mongoUri, outputFolder);
+  await exportDatabase(outputFolder);
 
   await compressFolder(outputFolder, zipFilePath);
 
-  await telegramService.sendFile(zipFilePath, chatId);
+  await telegramService.sendFile(zipFilePath, backupChatId);
 
   fs.unlink(zipFilePath, (err) => {
     if (err) {
