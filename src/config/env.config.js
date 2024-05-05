@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const parseArrayToObjects = require('../utils/parseArrayToObjects');
+
 const env = {
   port: process.env.PORT,
   mongoURI: process.env.MONGO_URI,
@@ -17,6 +19,7 @@ const env = {
     apiURL: process.env.COUNT_ACCESS_API_URL,
     apiKey: process.env.COUNT_ACCESS_API_KEY,
   },
+  services: parseArrayToObjects(process.env.SERVICES) || [],
 };
 
 module.exports = env;

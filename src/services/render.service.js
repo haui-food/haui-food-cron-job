@@ -1,17 +1,29 @@
 const axios = require('axios');
 
-const { RENDER_API, RENDER_SERVICE_ACTION } = require('../constants/index');
+const { env } = require('../config');
+const { RENDER_API } = require('../constants/index');
 
-const renderService = async (idService, apiKey, action) => {
-  const url = `${RENDER_API}/${idService}/${RENDER_SERVICE_ACTION[action]}`;
+const callRenderService = async (idService, apiKey, action) => {
+  const url = `${RENDER_API}/${idService}/${action}`;
   const headers = { Authorization: `Bearer ${apiKey}` };
 
   try {
-    const response = await axios.post(url, {}, { headers });
-    console.log(response.data);
+    await axios.post(url, {}, { headers });
   } catch (error) {
     console.error(error);
   }
 };
 
-module.exports = { renderService };
+const restartServices = async () => {
+  console.log('Restarting services...');
+  const { services } = env;
+
+  const action = 'restart';
+
+  for (const service of services) {
+    await callRenderService(service.idService, service.apiKeyService, action);
+  }
+  console.log('Services restarted.');
+};
+
+module.exports = { restartServices };

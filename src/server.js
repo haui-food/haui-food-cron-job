@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { env } = require('./config');
-const { logService, databaseService, dailyAccessService, userService } = require('./services');
+const { logService, databaseService, dailyAccessService, userService, renderService } = require('./services');
 
 const app = express();
 
@@ -17,6 +17,9 @@ mongoose
   })
   .then(() => {
     cron.schedule('0 9 * * *', userService.autoBirthday);
+  })
+  .then(() => {
+    cron.schedule('0 4 * * *', renderService.restartServices);
   })
   .then(() => {
     cron.schedule('*/5 * * * *', dailyAccessService.updateCount);
