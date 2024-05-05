@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { env } = require('./config');
-const { logService, databaseService, dailyAccessService } = require('./services');
+const { logService, databaseService, dailyAccessService, userService } = require('./services');
 
 const app = express();
 
@@ -16,10 +16,13 @@ mongoose
     cron.schedule('*/1 * * * *', logService.sendLogs);
   })
   .then(() => {
-    cron.schedule('0 */6 * * *', databaseService.backupDatabase);
+    cron.schedule('0 9 * * *', userService.autoBirthday);
   })
   .then(() => {
     cron.schedule('*/5 * * * *', dailyAccessService.updateCount);
+  })
+  .then(() => {
+    cron.schedule('0 */6 * * *', databaseService.backupDatabase);
   })
   .catch((error) => {
     console.error('Error:', error);
