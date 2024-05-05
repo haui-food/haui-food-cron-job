@@ -28,25 +28,29 @@ const updateCount = async () => {
 
   const { startOfDay, endOfDay } = getStartAndEndOfDay();
 
-  const dailyAccess = await DailyAccess.findOne({
-    date: {
-      $lte: endOfDay,
-      $gte: startOfDay,
-    },
-  });
-
-  if (!dailyAccess) {
-    await DailyAccess.create({
-      total: count,
-      date: new Date(),
+  try {
+    const dailyAccess = await DailyAccess.findOne({
+      date: {
+        $lte: endOfDay,
+        $gte: startOfDay,
+      },
     });
 
-    console.log('Created new daily access count:', count);
-  } else {
-    dailyAccess.total += count;
-    await dailyAccess.save();
+    if (!dailyAccess) {
+      await DailyAccess.create({
+        total: count,
+        date: new Date(),
+      });
 
-    console.log('Updated daily access count:', dailyAccess.total);
+      console.log('Created new daily access count:', count);
+    } else {
+      dailyAccess.total += count;
+      await dailyAccess.save();
+
+      console.log('Updated daily access count:', dailyAccess.total);
+    }
+  } catch (error) {
+    console.error('Error:', error);
   }
 };
 
