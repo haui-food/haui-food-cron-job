@@ -3,9 +3,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { env } = require('./config');
+const { TIME_ZONE } = require('./constants');
 const { logService, databaseService, dailyAccessService, userService, renderService } = require('./services');
 
 const app = express();
+
+const scheduledTasks = [
+  { task: logService.sendLogs, schedule: '*/1 * * * *' },
+  { task: userService.autoBirthday, schedule: '0 9 * * *' },
+  { task: renderService.restartServices, schedule: '0 4 * * *' },
+  { task: dailyAccessService.updateCount, schedule: '*/5 * * * *' },
+  { task: databaseService.backupDatabase, schedule: '0 */6 * * *' },
+];
 
 mongoose
   .connect(env.mongoURI)
@@ -13,19 +22,9 @@ mongoose
     console.log('Connected to MongoDB');
   })
   .then(() => {
-    cron.schedule('*/1 * * * *', logService.sendLogs);
-  })
-  .then(() => {
-    cron.schedule('0 9 * * *', userService.autoBirthday);
-  })
-  .then(() => {
-    cron.schedule('0 4 * * *', renderService.restartServices);
-  })
-  .then(() => {
-    cron.schedule('*/5 * * * *', dailyAccessService.updateCount);
-  })
-  .then(() => {
-    cron.schedule('0 */6 * * *', databaseService.backupDatabase);
+    scheduledTasks.forEach(({ task, schedule }) => {
+      cron.schedule(schedule, task, { scheduled: true, timezone: TIME_ZONE });
+    });
   })
   .catch((error) => {
     console.error('Error:', error);
