@@ -7,7 +7,10 @@ const RENDER_SERVICE_ACTION = {
   RESTART: 'restart',
 };
 
+const TIME_ZONE = 'Asia/Ho_Chi_Minh';
+
 module.exports = {
+  TIME_ZONE,
   RENDER_API,
   RENDER_SERVICE_ACTION,
 };
