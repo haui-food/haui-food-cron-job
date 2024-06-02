@@ -1,10 +1,10 @@
 const amqp = require('amqplib');
 
-const { env } = require('../config');
+const { rabbitmq } = require('../config');
 
 class RabbitMQClient {
   constructor() {
-    this.queueURL = env.rabbitmqURI;
+    this.queueURL = rabbitmq.uri;
     this.connection = null;
     this.channel = null;
   }

@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const express = require('express');
 const mongoose = require('mongoose');
 
-const { env } = require('./config');
+const { env, mongo } = require('./config');
 const { TIME_ZONE } = require('./constants');
 const { logService, databaseService, dailyAccessService, userService, renderService } = require('./services');
 
@@ -17,7 +17,7 @@ const scheduledTasks = [
 ];
 
 mongoose
-  .connect(env.mongoURI)
+  .connect(mongo.uri)
   .then(() => {
     console.log('Connected to MongoDB');
   })
