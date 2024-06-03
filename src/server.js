@@ -4,7 +4,14 @@ const mongoose = require('mongoose');
 
 const { env, mongo } = require('./config');
 const { TIME_ZONE } = require('./constants');
-const { logService, databaseService, dailyAccessService, userService, renderService } = require('./services');
+const {
+  logService,
+  userService,
+  orderService,
+  renderService,
+  databaseService,
+  dailyAccessService,
+} = require('./services');
 
 const app = express();
 
@@ -14,6 +21,7 @@ const scheduledTasks = [
   { task: renderService.restartServices, schedule: '0 4 * * *' },
   { task: dailyAccessService.updateCount, schedule: '*/5 * * * *' },
   { task: databaseService.backupDatabase, schedule: '0 */6 * * *' },
+  { task: orderService.getPendingBankOrders, schedule: '*/10 * * * * *' },
 ];
 
 mongoose
